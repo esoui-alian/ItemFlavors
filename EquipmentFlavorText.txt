@@ -9,10 +9,10 @@
 ## Title: Equipment Flavor Text
 ## Author: Alianym
 ## Description: A list of equipment along with accompanying flavor text.
-## Version: 0.1
-## AddOnVersion: 000001
+## Version: 0.10
+## AddOnVersion: 000010
 ## APIVersion: 101036
-## SavedVariables: EquipFlavorTextVars
+## SavedVariables: EquipmentFlavorText
 
 ;Keybinds
 Bindings.xml
@@ -23,6 +23,7 @@ lang/$(language).lua
 
 ;Main
 EquipmentFlavorText.lua
+EquipmentFlavorText.xml
 
 ; This Add-on is not created by, affiliated with or sponsored by ZeniMax
 ; Media Inc. or its affiliates. The Elder Scrolls® and related logos are
