@@ -1,50 +1,7 @@
 EFT = {addOnName = "EquipmentFlavorText"}
 
 -----
--- Item Flavor Text
------
-
-local function GenerateItemFlavorTextList(count)
-	EQUIP_FLAVOR_VARS.itemFlavor = {}
-	EQUIP_FLAVOR_VARS.questItemFlavor = {}
-
-	local count = tonumber(count)
-
-	local validItemTypes = {
-		[ITEMTYPE_ARMOR]			= "Armor",
-		[ITEMTYPE_WEAPON]			= "Weapons",
-	}
-
-	for i=1, 100000 do 
-		if not EQUIP_FLAVOR_VARS.itemFlavor[i] then
-			local link = "|H1:item:"..i..":364:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:10000:0|h|h" 
-			local fTxt = GetItemLinkFlavorText(link) 
-			local itemId = GetItemLinkItemId(link)
-
-			if fTxt ~= "" then
-				local itemType = GetItemLinkItemType(link)			
-
-				if validItemTypes[itemType] then
-					EQUIP_FLAVOR_VARS.itemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
-				end
-			end
-		end
-		
-		if not EQUIP_FLAVOR_VARS.questItemFlavor[i] then
-			local itemId = i
-			local link = "|H1:quest_item:"..i.."|h|h" 
-			local fTxt = GetQuestItemTooltipText(itemId) 
-			
-			if fTxt ~= "" then
-				EQUIP_FLAVOR_VARS.questItemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
-			end			
-		end
-	end
-end
-SLASH_COMMANDS["/itemflavor"] = GenerateItemFlavorTextList
-
------
---XML
+--Build Dropdown List
 -----
 
 local function BuildItemList(questItem, searchText, comboBox, descCtrl, iconCtrl, titleCtrl)
@@ -99,6 +56,8 @@ local function BuildItemList(questItem, searchText, comboBox, descCtrl, iconCtrl
 		end
     end
 
+	comboBox:UpdateItems()
+
     local IGNORE_CALLBACK = false
     local selectedEntry = trackedEntry or defaultEntry
     if selectedEntry then
@@ -107,6 +66,10 @@ local function BuildItemList(questItem, searchText, comboBox, descCtrl, iconCtrl
         comboBox:SelectFirstItem()
     end
 end
+
+-----
+--Initialize Dropdown
+-----
 
 local function InitializeItemDropdown()
 	local control = GetControl("EFT_TopLevelBGItemDropdown")
@@ -121,7 +84,7 @@ local function InitializeItemDropdown()
 	itemComboBox:SetSortsItems(true)
     itemComboBox:SetFont("ZoFontWinT1")
     itemComboBox:SetSpacing(4)
-    itemComboBox:SetHeight(500)
+    itemComboBox:SetHeight(350)
     EFT.itemComboBox = itemComboBox
 	EFT.itemContainer = itemContainer
 
@@ -145,7 +108,7 @@ local function InitializeQuestItemDropdown()
 	questItemComboBox:SetSortsItems(true)
     questItemComboBox:SetFont("ZoFontWinT1")
     questItemComboBox:SetSpacing(4)
-    questItemComboBox:SetHeight(500)
+    questItemComboBox:SetHeight(350)
     EFT.questItemComboBox = questItemComboBox
 	EFT.questItemContainer = questItemContainer
 
@@ -155,18 +118,14 @@ local function InitializeQuestItemDropdown()
 
     BuildItemList(true, _, questItemComboBox, desc, icon, title)
 end
-local function OnLoad(e, addOnName)
-	if addOnName ~= EFT.addOnName then return end
 
-	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewAccountWide("EquipmentFlavorText", 0.1, nil, {})
+-----
+--XML
+-----
 
-	-- Populate Dropdown
-	InitializeItemDropdown()
-	InitializeQuestItemDropdown()
-
-	EVENT_MANAGER:UnregisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED) 
+function EquipmentFlavorText_TLC_OnInitialized(control)
+	EFT.topLevel = control
 end
-EVENT_MANAGER:RegisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED, OnLoad) 
 
 function EquipmentFlavorText_TLC_OnShow(control)
 	--Stub
@@ -187,3 +146,90 @@ function EquipmentFlavorText_OnItemLinkMouseUp(control, _, link, button)
 
 	ZO_LinkHandler_OnLinkMouseUp(link, button, control)
 end
+
+-----
+-- Build Initial List
+-----
+
+local function GenerateItemFlavorTextList(count)
+	EQUIP_FLAVOR_VARS.itemFlavor = {}
+	EQUIP_FLAVOR_VARS.questItemFlavor = {}
+	EQUIP_FLAVOR_VARS.itemNameList = {}
+
+	local count = tonumber(count)
+
+	local validItemTypes = {
+		[ITEMTYPE_ARMOR]			= "Armor",
+		[ITEMTYPE_WEAPON]			= "Weapons",
+	}
+
+	for i=1,200000 do 
+		if not EQUIP_FLAVOR_VARS.itemFlavor[i] then
+			local link = "|H1:item:"..i..":364:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:10000:0|h|h" 
+			local fTxt = GetItemLinkFlavorText(link) 
+			local itemId = GetItemLinkItemId(link)
+
+			local itemName = GetItemLinkName(link)
+
+			if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then	
+				if fTxt ~= "" and GetItemLinkFunctionalQuality(link) >= ITEM_FUNCTIONAL_QUALITY_LEGENDARY then
+					local itemType = GetItemLinkItemType(link)			
+
+					if validItemTypes[itemType] then
+						EQUIP_FLAVOR_VARS.itemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
+						EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
+					end
+				end
+			end
+		end
+		
+		if not EQUIP_FLAVOR_VARS.questItemFlavor[i] then
+			local itemId = i
+			local link = "|H1:quest_item:"..i.."|h|h" 
+			local fTxt = GetQuestItemTooltipText(itemId) 
+
+			local itemName = GetQuestItemNameFromLink(link)
+
+			if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then			
+				if fTxt ~= "" then
+					EQUIP_FLAVOR_VARS.questItemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
+					EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
+				end
+			end
+		end
+	end
+
+	EQUIP_FLAVOR_VARS.itemNameList = {}
+end
+SLASH_COMMANDS["/itemflavor"] = GenerateItemFlavorTextList
+
+-----
+--OnLoad
+-----
+
+local function OnLoad(e, addOnName)
+	if addOnName ~= EFT.addOnName then return end
+
+	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewAccountWide("EquipmentFlavorText", 0.1, nil, {})
+
+	if (not EQUIP_FLAVOR_VARS.questItemFlavor) or (not EQUIP_FLAVOR_VARS.itemFlavor) then
+		GenerateItemFlavorTextList()
+	end
+
+	-- Populate Dropdown
+	InitializeItemDropdown()
+	InitializeQuestItemDropdown()
+
+	EVENT_MANAGER:UnregisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED) 
+end
+EVENT_MANAGER:RegisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED, OnLoad) 
+
+-----
+--Open/Close
+-----
+
+local function ToggleInterface()
+	local isHidden = EFT.topLevel:IsHidden()
+	EFT.topLevel:SetHidden(not isHidden)
+end
+SLASH_COMMANDS["/equipflavor"] = ToggleInterface

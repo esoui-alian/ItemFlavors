@@ -1,16 +1,20 @@
 <GuiXml>
 	<Controls>
-		<TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="false">
-			<Dimensions x="500" y="800" />
+		<TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="true" movable="true" clampedToScreen="true">
+			<Dimensions x="500" y="600" />
 			<Anchor point="Right" offsetY="-50"/>
 
+			<OnInitialized>
+				EquipmentFlavorText_TLC_OnInitialized(self)
+			</OnInitialized>
+			
 			<OnShow>
 				EquipmentFlavorText_TLC_OnShow(self)
 			</OnShow>
 
 			<Controls>
 				<Backdrop name="$(parent)BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
-                    <Dimensions x="500" y="400" />
+                    <Dimensions x="500" y="300" />
                     <Anchor point="TOP" />
 
 					<Controls>
@@ -62,8 +66,8 @@
 				</Backdrop>
 
                 <Backdrop name="$(parent)BGQuestItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
-                    <Dimensions x="500" y="400" />
-                    <Anchor point="CENTER" offsetY="200"/>
+                    <Dimensions x="500" y="300" />
+                    <Anchor point="CENTER" offsetY="150"/>
 
                     <Controls>
                         <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
