@@ -9,8 +9,8 @@
 ## Title: Equipment Flavor Text
 ## Author: Alianym
 ## Description: A list of equipment along with accompanying flavor text.
-## Version: 0.10
-## AddOnVersion: 000010
+## Version: 0.20
+## AddOnVersion: 000020
 ## APIVersion: 101036
 ## SavedVariables: EquipmentFlavorText
 

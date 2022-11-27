@@ -1,73 +1,81 @@
 <GuiXml>
 	<Controls>
-		<TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="true" movable="true" clampedToScreen="true">
-			<Dimensions x="500" y="600" />
-			<Anchor point="Right" offsetY="-50"/>
+        <TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="false" movable="true" clampedToScreen="true">
+            <Dimensions x="500" y="400" />
+            <Anchor point="LEFT" offsetY="50"/>
 
-			<OnInitialized>
-				EquipmentFlavorText_TLC_OnInitialized(self)
-			</OnInitialized>
-			
-			<OnShow>
-				EquipmentFlavorText_TLC_OnShow(self)
-			</OnShow>
+            <OnInitialized>
+                EquipmentFlavorText_TLC_OnInitialized(self)
+            </OnInitialized>
 
-			<Controls>
-				<Backdrop name="$(parent)BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
-                    <Dimensions x="500" y="300" />
+            <Controls>
+                <Backdrop name="$(parent)BGCategories" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
+                    <Dimensions x="500" y="50" />
                     <Anchor point="TOP" />
 
-					<Controls>
-						<Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
+                    <Controls>
+                        <Control name="$(parent)CategoriesDropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
+                            <Dimensions x="150" />
+                            <Anchor point="TOP" offsetX="0" offsetY="10"/>
+                        </Control>
+                    </Controls>
+                </Backdrop>
+
+                <Control name="$(parent)InfoContainer" tier="MEDIUM">
+                    <Anchor point="TOPLEFT" offsetY="50" />
+                    <Anchor point="BOTTOMRIGHT"/>
+                    <Controls>
+                        <Label name="$(parent)Title" font="ZoFontWinH2" mouseEnabled="true" linkEnabled="true">
+                            <Anchor point="TOPLEFT" offsetX ="50" offsetY="65" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
+
+                            <OnLinkMouseUp>
+                                EquipmentFlavorText_OnItemLinkMouseUp(self, _, link, button)
+                            </OnLinkMouseUp>
+                        </Label>
+
+                        <Label name="$(parent)Description" font="ZoFontWinH4">
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)Title" relativePoint="BOTTOMLEFT" offsetX="-30" offsetY="10" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
+                        </Label>
+
+                        <Texture name="$(parent)Icon">
+                            <Dimensions x="32" y="32" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LEFT" offsetX="-5" />
+                        </Texture>
+                    </Controls>
+                </Control>
+
+                <Backdrop name="$(parent)BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
+                    <Dimensions x="500" y="350" />
+                    <Anchor point="TOP" offsetY="50" />
+
+                    <Controls>
+                        <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
                             <Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
                             <Dimensions x="200"/>
-							<Controls>
+                            <Controls>
                                 <EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
                                     <Dimensions x="190" />
                                     <Anchor point="CENTER"/>
 
                                     <OnTextChanged>
-                                        EquipmentFlavorText_OnItemSearchTextChanged(self)
+                                        EquipmentFlavorText_OnEquipItemSearchTextChanged(self)
                                     </OnTextChanged>
                                 </EditBox>
                             </Controls>
                         </Backdrop>
 
                         <Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
-							<Dimensions x="250" />
-							<Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
-						</Control>
+                            <Dimensions x="250" />
+                            <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
+                        </Control>
+                    </Controls>
+                </Backdrop>
 
-						<Control name="$(parent)InfoContainer">
-							<Anchor point="TOPLEFT" />
-							<Anchor point="BOTTOMRIGHT" offsetY="100" />
-							<Controls>
-								<Label name="$(parent)Title" font="ZoFontWinH2" mouseEnabled="true" linkEnabled="true">
-									<Anchor point="TOPLEFT" offsetX ="50" offsetY="65" />
-                                    <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
-
-                                    <OnLinkMouseUp>
-                                        EquipmentFlavorText_OnItemLinkMouseUp(self, _, link, button)
-                                    </OnLinkMouseUp>
-								</Label>
-
-								<Label name="$(parent)Description" font="ZoFontWinH4">
-									<Anchor point="TOPLEFT" relativeTo="$(parent)Title" relativePoint="BOTTOMLEFT" offsetX="-30" offsetY="10" />
-									<Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
-								</Label>
-
-								<Texture name="$(parent)Icon">
-									<Dimensions x="32" y="32" />
-									<Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LEFT" offsetX="-5" />
-								</Texture>
-							</Controls>
-						</Control>                       
-					</Controls>
-				</Backdrop>
-
-                <Backdrop name="$(parent)BGQuestItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
-                    <Dimensions x="500" y="300" />
-                    <Anchor point="CENTER" offsetY="150"/>
+                <Backdrop name="$(parent)BGQuestItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
+                    <Dimensions x="500" y="350" />
+                    <Anchor point="TOP" offsetY="50"/>
 
                     <Controls>
                         <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
@@ -89,34 +97,36 @@
                             <Dimensions x="250" />
                             <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
                         </Control>
+                    </Controls>
+                </Backdrop>
 
-                        <Control name="$(parent)InfoContainer">
-                            <Anchor point="TOPLEFT" />
-                            <Anchor point="BOTTOMRIGHT" offsetY="100" />
+                <Backdrop name="$(parent)BGContainItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
+                    <Dimensions x="500" y="350" />
+                    <Anchor point="TOP" offsetY="50"/>
+
+                    <Controls>
+                        <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
+                            <Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
+                            <Dimensions x="200"/>
                             <Controls>
-                                <Label name="$(parent)Title" font="ZoFontWinH2" mouseEnabled="true" linkEnabled="true">
-                                    <Anchor point="TOPLEFT" offsetX ="50" offsetY="65" />
-                                    <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
+                                <EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
+                                    <Dimensions x="190" />
+                                    <Anchor point="CENTER"/>
 
-                                    <OnLinkMouseUp>
-                                        EquipmentFlavorText_OnItemLinkMouseUp(self, _, link, button)
-                                    </OnLinkMouseUp>
-                                </Label>
-
-                                <Label name="$(parent)Description" font="ZoFontWinH4">
-                                    <Anchor point="TOPLEFT" relativeTo="$(parent)Title" relativePoint="BOTTOMLEFT" offsetX="-30" offsetY="10" />
-                                    <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
-                                </Label>
-
-                                <Texture name="$(parent)Icon">
-                                    <Dimensions x="32" y="32" />
-                                    <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LEFT" offsetX="-5" />
-                                </Texture>
+                                    <OnTextChanged>
+                                        EquipmentFlavorText_OnContainItemSearchTextChanged(self)
+                                    </OnTextChanged>
+                                </EditBox>
                             </Controls>
+                        </Backdrop>
+
+                        <Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
+                            <Dimensions x="250" />
+                            <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
                         </Control>
                     </Controls>
                 </Backdrop>
-			</Controls>
-		</TopLevelControl>
+            </Controls>
+        </TopLevelControl>
 	</Controls>
 </GuiXml>
