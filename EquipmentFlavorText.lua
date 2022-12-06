@@ -1,5 +1,10 @@
 local EFT = {addOnName = "EquipmentFlavorText"}
 
+local CATEGORIES= "categories"
+local DISGUISE	= "disguise"
+local EQUIPMENT	= "equip"
+local QUESTITEM	= "quest"
+
 -----
 --OnSelectionChanged
 -----
@@ -8,7 +13,7 @@ local function OnItemChanged(comboBox, entryText, entry)
 	local descText = entryData.desc
 	local iconFile = entryData.icon
 
-	local equipCtrls = EFT["equip"]
+	local equipCtrls = EFT[EQUIPMENT]
 	
 	equipCtrls.itemTitle:SetText(entryData.link)
 	equipCtrls.itemDesc:SetText(descText)
@@ -24,9 +29,9 @@ local function BuildCatList(comboBox)
 	local trackedEntry = nil
 
 	local itemTypeCtrls = {
-		["Equipment"]	= {ctrl = GetControl("EFT_TopLevelBGItem"), comboBox = EFT["equip"].comboBox},
-		["Quest Items"]	={ctrl = GetControl("EFT_TopLevelBGQuestItem"), comboBox = EFT["quest"].comboBox},
-		["Container"]	= {ctrl = GetControl("EFT_TopLevelBGContainItem"), comboBox = EFT["contain"].comboBox},
+		[GetString(SI_ARMORY_EQUIPMENT_LABEL)]	= {ctrl = GetControl("EFT_TopLevelBGItem"), comboBox = EFT[EQUIPMENT].comboBox},
+		[GetString(SI_INVENTORY_MODE_QUEST_ITEMS)]	={ctrl = GetControl("EFT_TopLevelBGQuestItem"), comboBox = EFT[QUESTITEM].comboBox},
+		[GetString(SI_ITEMTYPE13)]	= {ctrl = GetControl("EFT_TopLevelBGDisguiseItem"), comboBox = EFT[DISGUISE].comboBox},
 	}
 
 	local lastEntryText = ""
@@ -87,20 +92,20 @@ local function BuildItemList(itemType, searchText, comboBox, descCtrl, iconCtrl,
 	comboBox:ClearItems()
 
 	local itemTable = {
-		["equip"]	= EQUIP_FLAVOR_VARS.itemFlavor,
-		["quest"]	= EQUIP_FLAVOR_VARS.questItemFlavor,
-		["contain"]	= EQUIP_FLAVOR_VARS.containItemFlavor,
+		[EQUIPMENT]	= EQUIP_FLAVOR_VARS.itemFlavor,
+		[QUESTITEM]	= EQUIP_FLAVOR_VARS.questItemFlavor,
+		[DISGUISE]	= EQUIP_FLAVOR_VARS.disguiseItemFlavor,
 	}
 
 	for itemId, itemData in pairs(itemTable[itemType]) do
 		local itemLink = itemData.link
 
-		local iconFile = itemType == "quest" and GetQuestItemIcon(itemId) or GetItemLinkIcon(itemLink)
-		local descText = itemType == "quest" and GetQuestItemTooltipText(itemId) or GetItemLinkFlavorText(itemLink)
-		local itemName = itemType == "quest" and GetQuestItemNameFromLink(itemLink) or GetItemLinkName(itemLink)
+		local iconFile = itemType == QUESTITEM and GetQuestItemIcon(itemId) or GetItemLinkIcon(itemLink)
+		local descText = itemType == QUESTITEM and GetQuestItemTooltipText(itemId) or GetItemLinkFlavorText(itemLink)
+		local itemName = itemType == QUESTITEM and GetQuestItemNameFromLink(itemLink) or GetItemLinkName(itemLink)
 		local name = zo_strformat("[<<1>>]", itemName)
 
-		local searchText = searchText and searchText:upper()
+		local searchText = searchText and tostring(searchText):upper()
 		if (not searchText) or (searchText and (name:upper():find(searchText) or descText:upper():find(searchText))) then
 			local entry = ZO_ComboBox:CreateItemEntry(name, OnItemChanged)
 			entry.data =
@@ -159,7 +164,7 @@ local function InitializeDropdown(itemType, control, containCtrl, suffix, buildC
 	EFT[suffix].comboBox = comboBox
 
 	if not buildCategories then
-		BuildItemList(itemType, _, comboBox, desc, icon, title)
+		BuildItemList(itemType, "", comboBox, desc, icon, title)
 	else BuildCatList(comboBox) end
 end
 
@@ -172,18 +177,18 @@ function EquipmentFlavorText_TLC_OnInitialized(control)
 end
 
 function EquipmentFlavorText_OnEquipItemSearchTextChanged(control)
-	local equipCtrls = EFT["equip"]
-	BuildItemList("equip", control:GetText(), equipCtrls.comboBox, equipCtrls.itemDesc, equipCtrls.itemIcon, equipCtrls.itemTitle)
+	local equipCtrls = EFT[EQUIPMENT]
+	BuildItemList(EQUIPMENT, control:GetText(), equipCtrls.comboBox, equipCtrls.itemDesc, equipCtrls.itemIcon, equipCtrls.itemTitle)
 end
 
 function EquipmentFlavorText_OnQuestItemSearchTextChanged(control)
-	local questCtrls = EFT["quest"]
-	BuildItemList("quest", control:GetText(), questCtrls.comboBox, questCtrls.itemDesc, questCtrls.itemIcon, questCtrls.itemTitle)
+	local questCtrls = EFT[QUESTITEM]
+	BuildItemList(QUESTITEM, control:GetText(), questCtrls.comboBox, questCtrls.itemDesc, questCtrls.itemIcon, questCtrls.itemTitle)
 end
 
-function EquipmentFlavorText_OnContainItemSearchTextChanged(control)
-	local containtCtrls = EFT["contain"]
-	BuildItemList("contain", control:GetText(), containtCtrls.comboBox, containtCtrls.itemDesc, containtCtrls.itemIcon, containtCtrls.itemTitle)
+function EquipmentFlavorText_OnDisguiseItemSearchTextChanged(control)
+	local disguiseCtrls = EFT[DISGUISE]
+	BuildItemList(DISGUISE, control:GetText(), disguiseCtrls.comboBox, disguiseCtrls.itemDesc, disguiseCtrls.itemIcon, disguiseCtrls.itemTitle)
 end
 
 function EquipmentFlavorText_OnItemLinkMouseUp(control, _, link, button)
@@ -201,7 +206,7 @@ end
 local function GenerateItemFlavorTextList(count)
 	EQUIP_FLAVOR_VARS.itemFlavor = {}
 	EQUIP_FLAVOR_VARS.questItemFlavor = {}
-	EQUIP_FLAVOR_VARS.containItemFlavor = {}
+	EQUIP_FLAVOR_VARS.disguiseItemFlavor = {}
 	EQUIP_FLAVOR_VARS.itemNameList = {}
 
 	local count = tonumber(count)
@@ -245,18 +250,19 @@ local function GenerateItemFlavorTextList(count)
 			end
 		end
 
-		if not EQUIP_FLAVOR_VARS.containItemFlavor[i] then
-			local link = "|H1:item:"..i..":1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0|h|h" 
+		if not EQUIP_FLAVOR_VARS.disguiseItemFlavor[i] then
+			local link = "|H1:item:"..i..":1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0|h|h" 
 			local fTxt = GetItemLinkFlavorText(link) 
 			local itemId = GetItemLinkItemId(link)
 
 			local itemName = GetItemLinkName(link)
 			local itemType = GetItemLinkItemType(link)	
 
-			if itemType == ITEMTYPE_CONTAINER then
+			--Check these aren't null
+			if itemType == ITEMTYPE_DISGUISE then
 				if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then	
-					if fTxt ~= "" and GetItemLinkFunctionalQuality(link) >= ITEM_FUNCTIONAL_QUALITY_LEGENDARY then
-						EQUIP_FLAVOR_VARS.containItemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
+					if fTxt ~= "" then
+						EQUIP_FLAVOR_VARS.disguiseItemFlavor[i] = {itemId = itemId, link = link, fTxt = fTxt}
 						EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
 					end
 				end
@@ -277,27 +283,29 @@ local function OnLoad(e, addOnName)
 
 	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewAccountWide("EquipmentFlavorText", 0.1, nil, {})
 
-	--if (not EQUIP_FLAVOR_VARS.questItemFlavor) or (not EQUIP_FLAVOR_VARS.itemFlavor) or (not EQUIP_FLAVOR_VARS.containFlavor) then
+	local lastAPIUpdate = EQUIP_FLAVOR_VARS.lastAPIUpdate
+	if lastAPIUpdate ~= GetAPIVersion() then
 		GenerateItemFlavorTextList()
-	--end
+		lastAPIUpdate = GetAPIVersion()
+	end
 
 	-- Populate Dropdown
 	local containCtrl = GetControl("EFT_TopLevelInfoContainer")
 
-	local control = GetControl("EFT_TopLevelBGItemDropdown")
-	local qControl = GetControl("EFT_TopLevelBGQuestItemDropdown")
-	local cControl = GetControl("EFT_TopLevelBGContainItemDropdown")
+	local control	= GetControl("EFT_TopLevelBGItemDropdown")
+	local qControl	= GetControl("EFT_TopLevelBGQuestItemDropdown")
+	local cControl	= GetControl("EFT_TopLevelBGDisguiseItemDropdown")
 
 	local catCtrl = GetControl("EFT_TopLevelBGCategoriesCategoriesDropdown")
 
 	-- Item Dropdowns
-	InitializeDropdown("equip", control, containCtrl, "equip")
-	InitializeDropdown("quest", qControl, containCtrl, "quest")
-	InitializeDropdown("contain", cControl, containCtrl, "contain")
+	InitializeDropdown(EQUIPMENT, control, containCtrl, EQUIPMENT)
+	InitializeDropdown(QUESTITEM, qControl, containCtrl, QUESTITEM)
+	InitializeDropdown(DISGUISE, cControl, containCtrl, DISGUISE)
 
 	-- Categories
 	local buildCategories = true
-	InitializeDropdown(_, catCtrl, _, "cat", buildCategories)
+	InitializeDropdown(_, catCtrl, _, CATEGORIES, buildCategories)
 
 	EVENT_MANAGER:UnregisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED) 
 end
@@ -307,8 +315,8 @@ EVENT_MANAGER:RegisterForEvent(EFT.addOnName, EVENT_ADD_ON_LOADED, OnLoad)
 --Open/Close
 -----
 
-local function ToggleInterface()
+function ToggleEFTInterface()
 	local isHidden = EFT.topLevel:IsHidden()
 	EFT.topLevel:SetHidden(not isHidden)
 end
-SLASH_COMMANDS["/equipflavor"] = ToggleInterface
+SLASH_COMMANDS["/equipflavor"] = ToggleEFTInterface

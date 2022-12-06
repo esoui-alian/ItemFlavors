@@ -1,0 +1,1 @@
+ZO_CreateStringId("SI_BINDING_NAME_EFT_TOGGLE", "Toggle Menu")

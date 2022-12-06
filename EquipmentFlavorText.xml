@@ -1,8 +1,8 @@
 <GuiXml>
 	<Controls>
-        <TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="false" movable="true" clampedToScreen="true">
+        <TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="true" movable="true" clampedToScreen="true">
             <Dimensions x="500" y="400" />
-            <Anchor point="LEFT" offsetY="50"/>
+            <Anchor point="CENTER" offsetY="50"/>
 
             <OnInitialized>
                 EquipmentFlavorText_TLC_OnInitialized(self)
@@ -100,7 +100,7 @@
                     </Controls>
                 </Backdrop>
 
-                <Backdrop name="$(parent)BGContainItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
+                <Backdrop name="$(parent)BGDisguiseItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
                     <Dimensions x="500" y="350" />
                     <Anchor point="TOP" offsetY="50"/>
 
@@ -114,7 +114,7 @@
                                     <Anchor point="CENTER"/>
 
                                     <OnTextChanged>
-                                        EquipmentFlavorText_OnContainItemSearchTextChanged(self)
+                                        EquipmentFlavorText_OnDisguiseItemSearchTextChanged(self)
                                     </OnTextChanged>
                                 </EditBox>
                             </Controls>
