@@ -17,6 +17,10 @@
 ;Keybinds
 Bindings.xml
 
+;Data
+ItemData.lua
+GenerateData.lua
+
 ;Language Files
 lang/en.lua
 lang/$(language).lua

@@ -45,88 +45,34 @@
                         </Texture>
                     </Controls>
                 </Control>
-
-                <Backdrop name="$(parent)BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
-                    <Dimensions x="500" y="350" />
-                    <Anchor point="TOP" offsetY="50" />
-
-                    <Controls>
-                        <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
-                            <Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
-                            <Dimensions x="200"/>
-                            <Controls>
-                                <EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
-                                    <Dimensions x="190" />
-                                    <Anchor point="CENTER"/>
-
-                                    <OnTextChanged>
-                                        EquipmentFlavorText_OnEquipItemSearchTextChanged(self)
-                                    </OnTextChanged>
-                                </EditBox>
-                            </Controls>
-                        </Backdrop>
-
-                        <Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
-                            <Dimensions x="250" />
-                            <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
-                        </Control>
-                    </Controls>
-                </Backdrop>
-
-                <Backdrop name="$(parent)BGQuestItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
-                    <Dimensions x="500" y="350" />
-                    <Anchor point="TOP" offsetY="50"/>
-
-                    <Controls>
-                        <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
-                            <Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
-                            <Dimensions x="200"/>
-                            <Controls>
-                                <EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
-                                    <Dimensions x="190" />
-                                    <Anchor point="CENTER"/>
-
-                                    <OnTextChanged>
-                                        EquipmentFlavorText_OnQuestItemSearchTextChanged(self)
-                                    </OnTextChanged>
-                                </EditBox>
-                            </Controls>
-                        </Backdrop>
-
-                        <Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
-                            <Dimensions x="250" />
-                            <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
-                        </Control>
-                    </Controls>
-                </Backdrop>
-
-                <Backdrop name="$(parent)BGDisguiseItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true">
-                    <Dimensions x="500" y="350" />
-                    <Anchor point="TOP" offsetY="50"/>
-
-                    <Controls>
-                        <Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
-                            <Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
-                            <Dimensions x="200"/>
-                            <Controls>
-                                <EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
-                                    <Dimensions x="190" />
-                                    <Anchor point="CENTER"/>
-
-                                    <OnTextChanged>
-                                        EquipmentFlavorText_OnDisguiseItemSearchTextChanged(self)
-                                    </OnTextChanged>
-                                </EditBox>
-                            </Controls>
-                        </Backdrop>
-
-                        <Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
-                            <Dimensions x="250" />
-                            <Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
-                        </Control>
-                    </Controls>
-                </Backdrop>
             </Controls>
         </TopLevelControl>
+
+		<Backdrop name="EFT_BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true" virtual="true">
+			<Dimensions x="500" y="350" />
+			<Anchor point="TOP" offsetY="50" />
+
+			<Controls>
+				<Backdrop name="$(parent)SearchBG" inherits="ZO_SingleLineEditBackdrop_Keyboard">
+					<Anchor point="TOPRIGHT" offsetX="-20" offsetY="20"/>
+					<Dimensions x="200"/>
+					<Controls>
+						<EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
+							<Dimensions x="190" />
+							<Anchor point="CENTER"/>
+
+							<OnTextChanged>
+								<!--EquipmentFlavorText_OnEquipItemSearchTextChanged(self)-->
+							</OnTextChanged>
+						</EditBox>
+					</Controls>
+				</Backdrop>
+
+				<Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
+					<Dimensions x="250" />
+					<Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
+				</Control>
+			</Controls>
+		</Backdrop>
 	</Controls>
 </GuiXml>
