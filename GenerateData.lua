@@ -37,26 +37,26 @@ itemConds = {
 		"A rare map indicating",
 		"A rare report indicating",
 	},
-	[ITEMTYPE_INGREDIENT] = {	--10
+	[ITEMTYPE_INGREDIENT] = {
 		"An ingredient",
-		"Use to make",			-- "Used" to make (?)
+		"Use to make",
 		"can be sold.",
 	},
-	[ITEMTYPE_CONTAINER] = {	--18
+	[ITEMTYPE_CONTAINER] = {
 		"Contains a",
 		"Ability-Altering",
 		"This box contains",
 	},
-	[ITEMTYPE_COLLECTIBLE] = {	--34
+	[ITEMTYPE_COLLECTIBLE] = {
 		"Grants an Outfit Style Collectible.",
 		"Use to learn the",
 	},
-	[ITEMTYPE_CROWN_ITEM] = {	--57
+	[ITEMTYPE_CROWN_ITEM] = {
 		"This consumable can be used only",
 		"This item has no cooldown.",
 		"Created by a",
 	},
-	[ITEMTYPE_FURNISHING] = {	--61
+	[ITEMTYPE_FURNISHING] = {
 		"This is a .+ house item.",
 	},
 }
