@@ -9,7 +9,14 @@
             </OnInitialized>
 
             <Controls>
-                <Backdrop name="$(parent)BGCategories" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
+				<Button name="$(parent)Close" inherits="ZO_CloseButton" tier="MEDIUM">
+					<Anchor point="TOPRIGHT" offsetX="-3" offsetY="3" />
+					<OnClicked>
+						EquipmentFlavorText_CloseWindow()
+					</OnClicked>
+				</Button>
+
+				<Backdrop name="$(parent)BGCategories" inherits="ZO_DefaultBackdrop" tier="MEDIUM">
                     <Dimensions x="500" y="50" />
                     <Anchor point="TOP" />
 
@@ -60,10 +67,6 @@
 						<EditBox name="$(parent)Search" inherits="ZO_DefaultEditForBackdrop" defaultText="SI_ACHIEVEMENT_SEARCH_EDIT_DEFAULT">
 							<Dimensions x="190" />
 							<Anchor point="CENTER"/>
-
-							<OnTextChanged>
-								<!--EquipmentFlavorText_OnEquipItemSearchTextChanged(self)-->
-							</OnTextChanged>
 						</EditBox>
 					</Controls>
 				</Backdrop>
@@ -72,6 +75,16 @@
 					<Dimensions x="250" />
 					<Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
 				</Control>
+
+				<Button name="$(parent)Favorites" inherits="ZO_CheckButton">
+					<Anchor point="BOTTOMLEFT" offsetY="-11"/>
+					<OnInitialized>
+						ZO_CheckButton_SetLabelText(self, GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0))
+					</OnInitialized>
+					<OnMouseUp>
+						EquipmentFlavorText_AddFavorite(self)
+					</OnMouseUp>
+				</Button>
 			</Controls>
 		</Backdrop>
 	</Controls>

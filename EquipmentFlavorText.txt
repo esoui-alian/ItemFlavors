@@ -6,11 +6,11 @@
 ; You can read the full terms at:
 ; https://account.elderscrollsonline.com/add-on-terms
 
-## Title: Equipment Flavor Text
+## Title: Item Flavors
 ## Author: Alianym
 ## Description: A list of equipment along with accompanying flavor text.
-## Version: 0.20
-## AddOnVersion: 000020
+## Version: 0.30
+## AddOnVersion: 000030
 ## APIVersion: 101036
 ## SavedVariables: EquipmentFlavorText
 
