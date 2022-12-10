@@ -26,7 +26,7 @@ local itemTypes = {
 	[ITEMTYPE_CROWN_ITEM]	= GetString(SI_ITEMTYPE57),
 	[ITEMTYPE_FURNISHING]	= GetString(SI_ITEMTYPE61),
 	[ITEMTYPE_RECALL_STONE]	= GetString(SI_ITEMTYPE69),
-	[99]					= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),	-- Quest Items (Custom Number)
+	[EFT_ITYPE_QUEST_ITEM]	= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),	-- Quest Items (Custom Number)
 }
 
 itemConds = {
@@ -62,9 +62,6 @@ itemConds = {
 }
 
 local function GenerateItemFlavorTextList()
-	EQUIP_FLAVOR_VARS.itemFlavor = {}
-	EQUIP_FLAVOR_VARS.questItemFlavor = {}
-	EQUIP_FLAVOR_VARS.disguiseItemFlavor = {}
 	EQUIP_FLAVOR_VARS.itemNameList = {}
 
 	EQUIP_FLAVOR_VARS.items = {}
@@ -72,46 +69,52 @@ local function GenerateItemFlavorTextList()
 		local link = "|H1:item:"..i..":364:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:10000:0|h|h"
 		local itemType = GetItemLinkItemType(link)
 
-		local fTxt = GetItemLinkFlavorText(link)
-
 		if itemTypes[itemType] then
-			do -- Most Items
-				local skipStringFound
-				if itemConds[itemType] then
-					for _, str in pairs(itemConds[itemType]) do
-						if fTxt:find(str) then
-							skipStringFound = true
-						end
+			local fTxt = GetItemLinkFlavorText(link)
+
+			local skipStringFound
+			if itemConds[itemType] then
+				for _, str in pairs(itemConds[itemType]) do
+					if fTxt:find(str) then
+						skipStringFound = true
 					end
 				end
+			end
 
-				if (fTxt ~= "" and (not skipStringFound)) or itemType == ITEMTYPE_DISGUISE then
-					local itemId = GetItemLinkItemId(link)
-					local itemName = GetItemLinkName(link)
+			if (fTxt ~= "" and (not skipStringFound)) or itemType == ITEMTYPE_DISGUISE then
+				local itemId = GetItemLinkItemId(link)
+				local iconFile = GetItemLinkIcon(link)
+				local itemName = GetItemLinkName(link)
 
-					EQUIP_FLAVOR_VARS.items[itemType] = EQUIP_FLAVOR_VARS.items[itemType] or {}
+				EQUIP_FLAVOR_VARS.items[itemType] = EQUIP_FLAVOR_VARS.items[itemType] or {}
 
-					if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then
-						EQUIP_FLAVOR_VARS.items[itemType][i] = {itemId = itemId, link = link, fTxt = fTxt, itemType = itemType}
-						EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
-					end
+				if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then
+					local numEntries = #EQUIP_FLAVOR_VARS.items[itemType] + 1
+					EQUIP_FLAVOR_VARS.items[itemType][numEntries] = {itemType = itemType, iconFile = iconFile, itemId = itemId, link = link}
+					EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
 				end
 			end
 		end
 
-		if itemType == ITEMTYPE_NONE then -- Includes Quest Items
-			local itemId = i
-			local qlink = "|H1:quest_item:"..i.."|h|h"
-			local fTxt = GetQuestItemTooltipText(itemId) 
-			local itemName = GetQuestItemNameFromLink(qlink)
+		local itemId = i
+		local qlink = "|H1:quest_item:"..i.."|h|h"
+		local iconFile = GetQuestItemIcon(itemId)
+		local fTxt = GetQuestItemTooltipText(itemId)
+		local itemName = GetQuestItemNameFromLink(qlink)
 
-			EQUIP_FLAVOR_VARS.items[100] = EQUIP_FLAVOR_VARS.items[100] or {}
+		EQUIP_FLAVOR_VARS.items[EFT_ITYPE_QUEST_ITEM] = EQUIP_FLAVOR_VARS.items[EFT_ITYPE_QUEST_ITEM] or {}
 
-			if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then			
-				if fTxt ~= "" then
-					EQUIP_FLAVOR_VARS.items[100][i] = {itemId = itemId, link = qlink, fTxt = fTxt}
-					EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
-				end
+		if not (EQUIP_FLAVOR_VARS.itemNameList[itemName] and EQUIP_FLAVOR_VARS.itemNameList[itemName] == fTxt) then			
+			if fTxt ~= "" then
+				local numEntries = #EQUIP_FLAVOR_VARS.items[EFT_ITYPE_QUEST_ITEM] + 1
+				EQUIP_FLAVOR_VARS.items[EFT_ITYPE_QUEST_ITEM][numEntries] = {
+					itemType = EFT_ITYPE_QUEST_ITEM,
+					iconFile = iconFile,
+					itemId = itemId,
+					link = qlink,
+				}
+
+				EQUIP_FLAVOR_VARS.itemNameList[itemName] = fTxt
 			end
 		end
 
@@ -119,4 +122,4 @@ local function GenerateItemFlavorTextList()
 
 	EQUIP_FLAVOR_VARS.itemNameList = {}
 end
-SLASH_COMMANDS["/itemflavor"] = GenerateItemFlavorTextList
+SLASH_COMMANDS["/genitems"] = GenerateItemFlavorTextList
