@@ -17,18 +17,18 @@ local itemTypeData = {
 	[ITEMTYPE_DRINK]		= GetString(SI_ITEMTYPE12),
 	[ITEMTYPE_DISGUISE]		= GetString(SI_ITEMTYPE14),
 	[ITEMTYPE_LURE]			= GetString(SI_ITEMTYPE16),
-	--[ITEMTYPE_CONTAINER]	= GetString(SI_ITEMTYPE18),							-- Too many extras
+	--[ITEMTYPE_CONTAINER]	= GetString(SI_ITEMTYPE18),												-- Too many extras
 	[ITEMTYPE_SOUL_GEM]		= GetString(SI_ITEMTYPE19),
 	[ITEMTYPE_RECIPE]		= GetString(SI_ITEMTYPE29),
 	[ITEMTYPE_COLLECTIBLE]	= GetString(SI_ITEMTYPE34),
 	[ITEMTYPE_TRASH]		= GetString(SI_ITEMTYPE48),
 	[ITEMTYPE_FISH]			= GetString(SI_ITEMTYPE54),
-	[ITEMTYPE_TREASURE]		= GetString(SI_ITEMTYPE56),							-- Exclude this one?
+	[ITEMTYPE_TREASURE]		= GetString(SI_ITEMTYPE56),												-- Exclude this one?
 	[ITEMTYPE_CROWN_ITEM]	= GetString(SI_ITEMTYPE57),
 	[ITEMTYPE_FURNISHING]	= GetString(SI_ITEMTYPE61),
 	[ITEMTYPE_RECALL_STONE]	= GetString(SI_ITEMTYPE69),
-	[EFT_ITYPE_QUEST_ITEM]	= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),			-- Quest Items (Custom Number)
-	[EFT_ITYPE_FAVORITE]	= GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0),-- Favorites (Custom Number)
+	[EFT_ITYPE_QUEST_ITEM]	= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),								-- Quest Items (Custom Number)
+	[EFT_ITYPE_FAVORITE]	= "|cEEBB00"..GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0).."|r",	-- Favorites (Custom Number)
 }
 
 -----
@@ -180,6 +180,15 @@ local function BuildItemList(itemType, searchText, comboBox, noRefresh)
 	end
 
 	if not maxCount[itemType].ini then maxCount[itemType].ini = true end
+	if entryCount == 0 and maxCount[itemType].num == 0 then
+		local link = "|H1:item:59711:364:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:10000:0|h|h"
+
+		local name = GetItemLinkName(link)
+		local fTxt = GetItemLinkFlavorText(link)
+		local icon = "/esoui/art/icons/icon_missing.dds"
+
+		CreateEntries(itemId, {link = link}, name, itemType, fTxt, icon, comboBox)
+	end
 
 	comboBox:UpdateItems()
 
@@ -247,10 +256,11 @@ local function InsertFavorite(fTxt, iconFile, isQuest, itemId, itemType, link)
 
 	local fTxtUpper = fTxt:upper()
 
-	itemCollections[itemType][itemId] = {itemType = itemType, iconFile = iconFile, itemId = itemId, link = link, isQuest = isQuest,
+	EQUIP_FLAVOR_VARS.items[itemType][itemId] = {itemType = itemType, iconFile = iconFile, itemId = itemId, link = link, isQuest = isQuest,
 		name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper},
 		fTxt = {fTxt, fTxtUpper},
 	}
+	itemCollections[itemType][itemId] = EQUIP_FLAVOR_VARS.items[itemType][itemId]
 end
 
 function EquipmentFlavorText_AddFavorite(button)
@@ -265,13 +275,13 @@ function EquipmentFlavorText_AddFavorite(button)
 	local isQuest = GetQuestItemNameFromLink(link) ~= ""
 	local itemId = isQuest == true and select(3, link:gmatch("|H1:quest_item:(%d+)|h|h")) or GetItemLinkItemId(link)
 
-	local exists = itemCollections[itemType] and itemCollections[itemType][itemId] and itemCollections[itemType][itemId].isQuest == isQuest
+	local exists = EQUIP_FLAVOR_VARS.items[itemType][itemId] and EQUIP_FLAVOR_VARS.items[itemType][itemId].isQuest == isQuest
 
 	local noRefresh = EFT[itemType].favorites:IsHidden()
 
 	if exists and (not ZO_CheckButton_IsChecked(button)) then 
 		maxCount[itemType] = nil
-		itemCollections[itemType][itemId] = nil
+		EQUIP_FLAVOR_VARS.items[itemType][itemId] = nil
 		BuildItemList(itemType, "", EFT[itemType].comboBox, noRefresh)
 	elseif (not exists) and ZO_CheckButton_IsChecked(button) then
 		maxCount[itemType] = nil
@@ -292,7 +302,10 @@ end
 local function OnLoad(e, addonName)
 	if addonName ~= addOnName then return end
 
-	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewAccountWide("EquipmentFlavorText", 0.1, nil, {})
+	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewCharacterIdSettings("EquipmentFlavorText", 0.1, nil, {items = {}}, GetWorldName())
+
+	EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE] or {}
+	itemCollections[EFT_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE]
 
 	-- Get Localized Name / Flavor Text --
 	for iType, collection in pairs(itemCollections) do
@@ -303,15 +316,17 @@ local function OnLoad(e, addonName)
 			local itemName = iType == EFT_ITYPE_QUEST_ITEM and GetQuestItemNameFromLink(link) or GetItemLinkName(link)
 			local itemNameUpper = itemName:upper()
 
-			local fTxt = iType == EFT_ITYPE_QUEST_ITEM and GetQuestItemTooltipText(itemId) or GetItemLinkFlavorText(link)
+			local enchantTxt = iType == ITEMTYPE_DISGUISE and select(3, GetItemLinkEnchantInfo(link)) or nil
+			local questText = iType == EFT_ITYPE_QUEST_ITEM and GetQuestItemTooltipText(itemId) or nil
+			local flavTxt = GetItemLinkFlavorText(link) ~= "" and GetItemLinkFlavorText(link) or nil
+
+			local fTxt = flavTxt or questText or enchantTxt
 			local fTxtUpper = fTxt:upper()
 
 			itemCollections[iType][index].name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper}
 			itemCollections[iType][index].fTxt = {fTxt, fTxtUpper}
 		end
 	end
-
-	itemCollections[EFT_ITYPE_FAVORITE] = itemCollections[EFT_ITYPE_FAVORITE] or {}
 
 	-- Populate Dropdowns --
 	-- Item Types

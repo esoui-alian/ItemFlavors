@@ -77,7 +77,7 @@
 				</Control>
 
 				<Button name="$(parent)Favorites" inherits="ZO_CheckButton">
-					<Anchor point="BOTTOMLEFT" offsetY="-11"/>
+					<Anchor point="BOTTOMLEFT" offsetX="5" offsetY="-9"/>
 					<OnInitialized>
 						ZO_CheckButton_SetLabelText(self, GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0))
 					</OnInitialized>
