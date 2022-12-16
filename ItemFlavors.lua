@@ -183,7 +183,7 @@ local function BuildItemList(itemType, searchText, comboBox, noRefresh)
 	if entryCount == 0 and maxCount[itemType].num == 0 then
 		local link = "|H1:item:59711:364:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:10000:0|h|h"
 
-		local name = GetItemLinkName(link)
+		local name = zo_strformat("[<<1>>]", GetItemLinkName(link))
 		local fTxt = GetItemLinkFlavorText(link)
 		local icon = "/esoui/art/icons/icon_missing.dds"
 
@@ -273,7 +273,7 @@ function ItemFlavors_AddFavorite(button)
 	local iconFile = infoCtrls.itemIcon:GetTextureFileName(iconFile)
 
 	local isQuest = GetQuestItemNameFromLink(link) ~= ""
-	local itemId = isQuest == true and select(3, link:gmatch("|H1:quest_item:(%d+)|h|h")) or GetItemLinkItemId(link)
+	local itemId = isQuest == true and select(3, link:find("|H1:quest_item:(%d+)|h|h")) or GetItemLinkItemId(link)
 
 	local exists = EQUIP_FLAVOR_VARS.items[itemType][itemId] and EQUIP_FLAVOR_VARS.items[itemType][itemId].isQuest == isQuest
 

@@ -29,12 +29,12 @@
                 </Backdrop>
 
                 <Control name="$(parent)InfoContainer" tier="MEDIUM">
-                    <Anchor point="TOPLITMFLVR" offsetY="50" />
+                    <Anchor point="TOPLEFT" offsetY="50" />
                     <Anchor point="BOTTOMRIGHT"/>
                     <Controls>
                         <Label name="$(parent)Title" font="ZoFontWinH2" mouseEnabled="true" linkEnabled="true">
-                            <Anchor point="TOPLITMFLVR" offsetX ="50" offsetY="65" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LITMFLVR" constrains="X" offsetX="460"/>
+                            <Anchor point="TOPLEFT" offsetX ="50" offsetY="65" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
 
                             <OnLinkMouseUp>
                                 ItemFlavors_OnItemLinkMouseUp(self, _, link, button)
@@ -42,13 +42,13 @@
                         </Label>
 
                         <Label name="$(parent)Description" font="ZoFontWinH4">
-                            <Anchor point="TOPLITMFLVR" relativeTo="$(parent)Title" relativePoint="BOTTOMLITMFLVR" offsetX="-30" offsetY="10" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LITMFLVR" constrains="X" offsetX="460"/>
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)Title" relativePoint="BOTTOMLEFT" offsetX="-30" offsetY="10" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
                         </Label>
 
                         <Texture name="$(parent)Icon">
                             <Dimensions x="32" y="32" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LITMFLVR" offsetX="-5" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LEFT" offsetX="-5" />
                         </Texture>
                     </Controls>
                 </Control>
@@ -73,11 +73,11 @@
 
 				<Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
 					<Dimensions x="250" />
-					<Anchor point="TOPLITMFLVR" offsetX="20" offsetY="20"/>
+					<Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
 				</Control>
 
 				<Button name="$(parent)Favorites" inherits="ZO_CheckButton">
-					<Anchor point="BOTTOMLITMFLVR" offsetX="5" offsetY="-9"/>
+					<Anchor point="BOTTOMLEFT" offsetX="5" offsetY="-9"/>
 					<OnInitialized>
 						ZO_CheckButton_SetLabelText(self, GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0))
 					</OnInitialized>
