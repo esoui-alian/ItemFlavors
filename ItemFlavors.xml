@@ -1,18 +1,18 @@
 <GuiXml>
 	<Controls>
-        <TopLevelControl name="EFT_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="true" movable="true" clampedToScreen="true">
+        <TopLevelControl name="ITMFLVR_TopLevel" mouseEnabled="true" tier="MEDIUM" layer="TEXT" hidden="true" movable="true" clampedToScreen="true">
             <Dimensions x="500" y="400" />
             <Anchor point="CENTER" offsetY="50"/>
 
             <OnInitialized>
-                EquipmentFlavorText_TLC_OnInitialized(self)
+                ItemFlavors_TLC_OnInitialized(self)
             </OnInitialized>
 
             <Controls>
 				<Button name="$(parent)Close" inherits="ZO_CloseButton" tier="MEDIUM">
 					<Anchor point="TOPRIGHT" offsetX="-3" offsetY="3" />
 					<OnClicked>
-						EquipmentFlavorText_CloseWindow()
+						ItemFlavors_CloseWindow()
 					</OnClicked>
 				</Button>
 
@@ -29,33 +29,33 @@
                 </Backdrop>
 
                 <Control name="$(parent)InfoContainer" tier="MEDIUM">
-                    <Anchor point="TOPLEFT" offsetY="50" />
+                    <Anchor point="TOPLITMFLVR" offsetY="50" />
                     <Anchor point="BOTTOMRIGHT"/>
                     <Controls>
                         <Label name="$(parent)Title" font="ZoFontWinH2" mouseEnabled="true" linkEnabled="true">
-                            <Anchor point="TOPLEFT" offsetX ="50" offsetY="65" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
+                            <Anchor point="TOPLITMFLVR" offsetX ="50" offsetY="65" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LITMFLVR" constrains="X" offsetX="460"/>
 
                             <OnLinkMouseUp>
-                                EquipmentFlavorText_OnItemLinkMouseUp(self, _, link, button)
+                                ItemFlavors_OnItemLinkMouseUp(self, _, link, button)
                             </OnLinkMouseUp>
                         </Label>
 
                         <Label name="$(parent)Description" font="ZoFontWinH4">
-                            <Anchor point="TOPLEFT" relativeTo="$(parent)Title" relativePoint="BOTTOMLEFT" offsetX="-30" offsetY="10" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LEFT" constrains="X" offsetX="460"/>
+                            <Anchor point="TOPLITMFLVR" relativeTo="$(parent)Title" relativePoint="BOTTOMLITMFLVR" offsetX="-30" offsetY="10" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="LITMFLVR" constrains="X" offsetX="460"/>
                         </Label>
 
                         <Texture name="$(parent)Icon">
                             <Dimensions x="32" y="32" />
-                            <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LEFT" offsetX="-5" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)Title" relativePoint="LITMFLVR" offsetX="-5" />
                         </Texture>
                     </Controls>
                 </Control>
             </Controls>
         </TopLevelControl>
 
-		<Backdrop name="EFT_BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true" virtual="true">
+		<Backdrop name="ITMFLVR_BGItem" inherits="ZO_DefaultBackdrop" tier="MEDIUM" hidden="true" virtual="true">
 			<Dimensions x="500" y="350" />
 			<Anchor point="TOP" offsetY="50" />
 
@@ -73,16 +73,16 @@
 
 				<Control name="$(parent)Dropdown" inherits="ZO_ScrollableComboBox" font="ZoFontHeader3">
 					<Dimensions x="250" />
-					<Anchor point="TOPLEFT" offsetX="20" offsetY="20"/>
+					<Anchor point="TOPLITMFLVR" offsetX="20" offsetY="20"/>
 				</Control>
 
 				<Button name="$(parent)Favorites" inherits="ZO_CheckButton">
-					<Anchor point="BOTTOMLEFT" offsetX="5" offsetY="-9"/>
+					<Anchor point="BOTTOMLITMFLVR" offsetX="5" offsetY="-9"/>
 					<OnInitialized>
 						ZO_CheckButton_SetLabelText(self, GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0))
 					</OnInitialized>
 					<OnMouseUp>
-						EquipmentFlavorText_AddFavorite(self)
+						ItemFlavors_AddFavorite(self)
 					</OnMouseUp>
 				</Button>
 			</Controls>

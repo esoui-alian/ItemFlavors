@@ -1,4 +1,4 @@
-EFTDATA = {
+ITMFLVRDATA = {
     ["items"] = 
     {
         [1] = 

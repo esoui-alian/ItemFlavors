@@ -1,7 +1,7 @@
-EFT = {}
-local addOnName = "EquipmentFlavorText"
+ITMFLVR = {}
+local addOnName = "ItemFlavors"
 
-local itemCollections = EFTDATA.items
+local itemCollections = ITMFLVRDATA.items
 local CATEGORIES= "categories"
 
 local itemTypeData = {
@@ -27,8 +27,8 @@ local itemTypeData = {
 	[ITEMTYPE_CROWN_ITEM]	= GetString(SI_ITEMTYPE57),
 	[ITEMTYPE_FURNISHING]	= GetString(SI_ITEMTYPE61),
 	[ITEMTYPE_RECALL_STONE]	= GetString(SI_ITEMTYPE69),
-	[EFT_ITYPE_QUEST_ITEM]	= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),								-- Quest Items (Custom Number)
-	[EFT_ITYPE_FAVORITE]	= "|cEEBB00"..GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0).."|r",	-- Favorites (Custom Number)
+	[ITMFLVR_ITYPE_QUEST_ITEM]	= GetString(SI_ITEM_FORMAT_STR_QUEST_ITEM),								-- Quest Items (Custom Number)
+	[ITMFLVR_ITYPE_FAVORITE]	= "|cEEBB00"..GetString(SI_TRIBUTEPATRONPERSPECTIVEFAVORSTATE0).."|r",	-- Favorites (Custom Number)
 }
 
 -----
@@ -39,7 +39,7 @@ local function OnItemChanged(comboBox, entryText, entry)
 	local descText = entryData.desc
 	local iconFile = entryData.icon
 
-	local infoCtrls = EFT[CATEGORIES]
+	local infoCtrls = ITMFLVR[CATEGORIES]
 
 	if infoCtrls then
 		infoCtrls.itemTitle:SetText(entryData.link)
@@ -48,13 +48,13 @@ local function OnItemChanged(comboBox, entryText, entry)
 	end
 
 	local itemType = entryData.iType
-	if EFT[EFT_ITYPE_FAVORITE] and EFT[EFT_ITYPE_FAVORITE].favorites and EFT[itemType] then
-		local favCtrl = EFT[itemType].favorites
+	if ITMFLVR[ITMFLVR_ITYPE_FAVORITE] and ITMFLVR[ITMFLVR_ITYPE_FAVORITE].favorites and ITMFLVR[itemType] then
+		local favCtrl = ITMFLVR[itemType].favorites
 
-		--if itemType ~= EFT_ITYPE_FAVORITE then
+		--if itemType ~= ITMFLVR_ITYPE_FAVORITE then
 			local itemId = entryData.itemId
 
-			if (not itemCollections[EFT_ITYPE_FAVORITE][itemId]) then
+			if (not itemCollections[ITMFLVR_ITYPE_FAVORITE][itemId]) then
 				ZO_CheckButton_SetUnchecked(favCtrl)
 			else ZO_CheckButton_SetChecked(favCtrl) end
 		--[[else
@@ -79,19 +79,19 @@ local function BuildCatList(comboBox)
 
 		local entryData = entry.data
 		local entryIType = entryData.itemType
-		local entryCtrl = GetControl("EFT_BGItem"..entryIType)
+		local entryCtrl = GetControl("ITMFLVR_BGItem"..entryIType)
 		
-		local itemSelectedData = EFT[entryIType].comboBox:GetSelectedItemData()
+		local itemSelectedData = ITMFLVR[entryIType].comboBox:GetSelectedItemData()
 		if not itemSelectedData then
-			EFT[entryIType].comboBox:SelectFirstItem()
-			itemSelectedData = EFT[entryIType].comboBox:GetSelectedItemData()
+			ITMFLVR[entryIType].comboBox:SelectFirstItem()
+			itemSelectedData = ITMFLVR[entryIType].comboBox:GetSelectedItemData()
 		end
 
 		OnItemChanged(entryData.comboBox, _, itemSelectedData)
 
 		local lastData = lastEntryData.data
 		local lastIType = lastData.itemType
-		local lastCtrl = GetControl("EFT_BGItem"..lastIType)
+		local lastCtrl = GetControl("ITMFLVR_BGItem"..lastIType)
 
 		lastCtrl:SetHidden(true)
 		entryCtrl:SetHidden(false)
@@ -103,7 +103,7 @@ local function BuildCatList(comboBox)
 
 	for iType, name in pairs(itemTypeData) do
 		local name = zo_strformat("<<1>>", name)
-		local comboBox = EFT[CATEGORIES].comboBox
+		local comboBox = ITMFLVR[CATEGORIES].comboBox
 
 		local entry = ZO_ComboBox:CreateItemEntry(name, OnCategoryChanged)
 		entry.data =
@@ -211,7 +211,7 @@ local function InitializeDropdown(itemType, control, containCtrl, suffix, buildC
 
 	local comboBox = ZO_ComboBox_ObjectFromContainer(control)
 
-	EFT[suffix] = {}
+	ITMFLVR[suffix] = {}
 
 	local itemContainer, icon, title, desc
 	if containCtrl then
@@ -219,10 +219,10 @@ local function InitializeDropdown(itemType, control, containCtrl, suffix, buildC
 		title	= containCtrl:GetNamedChild("Title")
 		desc	= containCtrl:GetNamedChild("Description")
 
-		EFT[CATEGORIES].itemDesc = desc
-		EFT[CATEGORIES].itemIcon = icon
-		EFT[CATEGORIES].itemTitle = title
-		EFT[CATEGORIES].itemContainer = containCtrl
+		ITMFLVR[CATEGORIES].itemDesc = desc
+		ITMFLVR[CATEGORIES].itemIcon = icon
+		ITMFLVR[CATEGORIES].itemTitle = title
+		ITMFLVR[CATEGORIES].itemContainer = containCtrl
 	end
 
 	comboBox:SetSortsItems(true)
@@ -230,8 +230,8 @@ local function InitializeDropdown(itemType, control, containCtrl, suffix, buildC
 	comboBox:SetSpacing(4)
 	comboBox:SetHeight(350)
 
-	EFT[suffix].comboBox = comboBox
-	EFT[suffix].favorites = control:GetParent():GetNamedChild("Favorites")
+	ITMFLVR[suffix].comboBox = comboBox
+	ITMFLVR[suffix].favorites = control:GetParent():GetNamedChild("Favorites")
 
 	if not buildCategories then
 		BuildItemList(itemType, "", comboBox)
@@ -242,12 +242,12 @@ end
 --XML
 -----
 
-function EquipmentFlavorText_TLC_OnInitialized(control)
-	EFT.topLevel = control
+function ItemFlavors_TLC_OnInitialized(control)
+	ITMFLVR.topLevel = control
 end
 
-function EquipmentFlavorText_CloseWindow()
-	EFT.topLevel:SetHidden(true)
+function ItemFlavors_CloseWindow()
+	ITMFLVR.topLevel:SetHidden(true)
 end
 
 local function InsertFavorite(fTxt, iconFile, isQuest, itemId, itemType, link)
@@ -263,10 +263,10 @@ local function InsertFavorite(fTxt, iconFile, isQuest, itemId, itemType, link)
 	itemCollections[itemType][itemId] = EQUIP_FLAVOR_VARS.items[itemType][itemId]
 end
 
-function EquipmentFlavorText_AddFavorite(button)
-	local itemType = EFT_ITYPE_FAVORITE
+function ItemFlavors_AddFavorite(button)
+	local itemType = ITMFLVR_ITYPE_FAVORITE
 
-	local infoCtrls = EFT[CATEGORIES]
+	local infoCtrls = ITMFLVR[CATEGORIES]
 		
 	local link = infoCtrls.itemTitle:GetText()
 	local fTxt = infoCtrls.itemDesc:GetText()
@@ -277,20 +277,20 @@ function EquipmentFlavorText_AddFavorite(button)
 
 	local exists = EQUIP_FLAVOR_VARS.items[itemType][itemId] and EQUIP_FLAVOR_VARS.items[itemType][itemId].isQuest == isQuest
 
-	local noRefresh = EFT[itemType].favorites:IsHidden()
+	local noRefresh = ITMFLVR[itemType].favorites:IsHidden()
 
 	if exists and (not ZO_CheckButton_IsChecked(button)) then 
 		maxCount[itemType] = nil
 		EQUIP_FLAVOR_VARS.items[itemType][itemId] = nil
-		BuildItemList(itemType, "", EFT[itemType].comboBox, noRefresh)
+		BuildItemList(itemType, "", ITMFLVR[itemType].comboBox, noRefresh)
 	elseif (not exists) and ZO_CheckButton_IsChecked(button) then
 		maxCount[itemType] = nil
 		InsertFavorite(fTxt, iconFile, isQuest, itemId, itemType, link)
-		BuildItemList(itemType, "", EFT[itemType].comboBox, noRefresh)
+		BuildItemList(itemType, "", ITMFLVR[itemType].comboBox, noRefresh)
 	end
 end
 
-function EquipmentFlavorText_OnItemLinkMouseUp(control, _, link, button)
+function ItemFlavors_OnItemLinkMouseUp(control, _, link, button)
 	local link = control:GetText()
 	ZO_LinkHandler_OnLinkMouseUp(link, button, control)
 end
@@ -302,10 +302,10 @@ end
 local function OnLoad(e, addonName)
 	if addonName ~= addOnName then return end
 
-	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewCharacterIdSettings("EquipmentFlavorText", 0.1, nil, {items = {}}, GetWorldName())
+	EQUIP_FLAVOR_VARS = ZO_SavedVars:NewCharacterIdSettings("ItemFlavors", 0.1, nil, {items = {}}, GetWorldName())
 
-	EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE] or {}
-	itemCollections[EFT_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[EFT_ITYPE_FAVORITE]
+	EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE] or {}
+	itemCollections[ITMFLVR_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE]
 
 	-- Get Localized Name / Flavor Text --
 	for iType, collection in pairs(itemCollections) do
@@ -313,11 +313,11 @@ local function OnLoad(e, addonName)
 			local link = itemData.link
 			local itemId = itemData.itemId
 
-			local itemName = iType == EFT_ITYPE_QUEST_ITEM and GetQuestItemNameFromLink(link) or GetItemLinkName(link)
+			local itemName = iType == ITMFLVR_ITYPE_QUEST_ITEM and GetQuestItemNameFromLink(link) or GetItemLinkName(link)
 			local itemNameUpper = itemName:upper()
 
 			local enchantTxt = iType == ITEMTYPE_DISGUISE and select(3, GetItemLinkEnchantInfo(link)) or nil
-			local questText = iType == EFT_ITYPE_QUEST_ITEM and GetQuestItemTooltipText(itemId) or nil
+			local questText = iType == ITMFLVR_ITYPE_QUEST_ITEM and GetQuestItemTooltipText(itemId) or nil
 			local flavTxt = GetItemLinkFlavorText(link) ~= "" and GetItemLinkFlavorText(link) or nil
 
 			local fTxt = flavTxt or questText or enchantTxt
@@ -330,19 +330,19 @@ local function OnLoad(e, addonName)
 
 	-- Populate Dropdowns --
 	-- Item Types
-	EFT.iControls = {}
+	ITMFLVR.iControls = {}
 	for iType, _ in pairs(itemTypeData) do
-		EFT.iControls[iType] = CreateControlFromVirtual("EFT_BGItem", EFT_TopLevel, "EFT_BGItem", iType)
-		local dropdown = EFT.iControls[iType]:GetNamedChild("Dropdown")
+		ITMFLVR.iControls[iType] = CreateControlFromVirtual("ITMFLVR_BGItem", ITMFLVR_TopLevel, "ITMFLVR_BGItem", iType)
+		local dropdown = ITMFLVR.iControls[iType]:GetNamedChild("Dropdown")
 
-		local favoritesLbl = EFT.iControls[iType]:GetNamedChild("FavoritesLabel")
+		local favoritesLbl = ITMFLVR.iControls[iType]:GetNamedChild("FavoritesLabel")
 		favoritesLbl:SetHandler("OnMouseUp", function(control) 
-			EquipmentFlavorText_AddFavorite(favoritesLbl:GetParent()) 
+			ItemFlavors_AddFavorite(favoritesLbl:GetParent()) 
 		end, addOnName)
 
-		local search = EFT.iControls[iType]:GetNamedChild("SearchBGSearch")
+		local search = ITMFLVR.iControls[iType]:GetNamedChild("SearchBGSearch")
 		search:SetHandler("OnTextChanged", function(control)
-			local buildCtrls = EFT[iType]
+			local buildCtrls = ITMFLVR[iType]
 			BuildItemList(iType, control:GetText(), buildCtrls.comboBox)
 		end, addOnName)
 
@@ -350,12 +350,12 @@ local function OnLoad(e, addonName)
 	end
 
 	-- Disabled Favorites button in that Category
-	--ZO_CheckButton_Disable(EFT[EFT_ITYPE_FAVORITE].favorites)
+	--ZO_CheckButton_Disable(ITMFLVR[ITMFLVR_ITYPE_FAVORITE].favorites)
 
 	-- Categories
 	local buildCategories = true
-	local containCtrl = GetControl("EFT_TopLevelInfoContainer")
-	local catDropdown = GetControl("EFT_TopLevelBGCategoriesCategoriesDropdown")
+	local containCtrl = GetControl("ITMFLVR_TopLevelInfoContainer")
+	local catDropdown = GetControl("ITMFLVR_TopLevelBGCategoriesCategoriesDropdown")
 	InitializeDropdown(_, catDropdown, containCtrl, CATEGORIES, buildCategories)
 
 	EVENT_MANAGER:UnregisterForEvent(addOnName, EVENT_ADD_ON_LOADED) 
@@ -366,8 +366,8 @@ EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_ADD_ON_LOADED, OnLoad)
 --Open/Close
 -----
 
-function ToggleEFTInterface()
-	local isHidden = EFT.topLevel:IsHidden()
-	EFT.topLevel:SetHidden(not isHidden)
+function ToggleITMFLVRInterface()
+	local isHidden = ITMFLVR.topLevel:IsHidden()
+	ITMFLVR.topLevel:SetHidden(not isHidden)
 end
-SLASH_COMMANDS["/itemflavor"] = ToggleEFTInterface
+SLASH_COMMANDS["/itemflavor"] = ToggleITMFLVRInterface

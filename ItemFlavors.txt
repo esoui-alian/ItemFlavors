@@ -12,7 +12,7 @@
 ## Version: 0.30
 ## AddOnVersion: 000030
 ## APIVersion: 101036
-## SavedVariables: EquipmentFlavorText
+## SavedVariables: ItemFlavors
 
 ;Keybinds
 Bindings.xml
@@ -23,9 +23,10 @@ lang/$(language).lua
 
 ;Data
 ItemData.lua
+
 ;Main
-EquipmentFlavorText.lua
-EquipmentFlavorText.xml
+ItemFlavors.lua
+ItemFlavors.xml
 
 ; This Add-on is not created by, affiliated with or sponsored by ZeniMax
 ; Media Inc. or its affiliates. The Elder Scrolls® and related logos are
