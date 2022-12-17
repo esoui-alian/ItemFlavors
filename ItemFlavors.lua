@@ -1,4 +1,4 @@
-ITMFLVR = {}
+local ITMFLVR = {}
 local addOnName = "ItemFlavors"
 
 local itemCollections = ITMFLVRDATA.items
@@ -17,13 +17,13 @@ local itemTypeData = {
 	[ITEMTYPE_DRINK]		= GetString(SI_ITEMTYPE12),
 	[ITEMTYPE_DISGUISE]		= GetString(SI_ITEMTYPE14),
 	[ITEMTYPE_LURE]			= GetString(SI_ITEMTYPE16),
-	--[ITEMTYPE_CONTAINER]	= GetString(SI_ITEMTYPE18),												-- Too many extras
+	--[ITEMTYPE_CONTAINER]	= GetString(SI_ITEMTYPE18),													-- Too many extras
 	[ITEMTYPE_SOUL_GEM]		= GetString(SI_ITEMTYPE19),
 	[ITEMTYPE_RECIPE]		= GetString(SI_ITEMTYPE29),
 	[ITEMTYPE_COLLECTIBLE]	= GetString(SI_ITEMTYPE34),
 	[ITEMTYPE_TRASH]		= GetString(SI_ITEMTYPE48),
 	[ITEMTYPE_FISH]			= GetString(SI_ITEMTYPE54),
-	[ITEMTYPE_TREASURE]		= GetString(SI_ITEMTYPE56),												-- Exclude this one?
+	[ITEMTYPE_TREASURE]		= GetString(SI_ITEMTYPE56),													-- Exclude this one?
 	[ITEMTYPE_CROWN_ITEM]	= GetString(SI_ITEMTYPE57),
 	[ITEMTYPE_FURNISHING]	= GetString(SI_ITEMTYPE61),
 	[ITEMTYPE_RECALL_STONE]	= GetString(SI_ITEMTYPE69),
@@ -313,18 +313,22 @@ local function OnLoad(e, addonName)
 			local link = itemData.link
 			local itemId = itemData.itemId
 
-			local itemName = iType == ITMFLVR_ITYPE_QUEST_ITEM and GetQuestItemNameFromLink(link) or GetItemLinkName(link)
+			local isQuest = iType == ITMFLVR_ITYPE_QUEST_ITEM or itemData.isQuest
+			local itemName, itemText
+			if isQuest then
+				itemName = GetQuestItemNameFromLink(link)
+				itemText = GetQuestItemTooltipText(itemId)
+			else
+				itemName = GetItemLinkName(link)
+				itemText = iType == ITEMTYPE_DISGUISE and select(3, GetItemLinkEnchantInfo(link))
+				itemText = GetItemLinkFlavorText(link) ~= "" and GetItemLinkFlavorText(link) or itemText
+			end
+
 			local itemNameUpper = itemName:upper()
-
-			local enchantTxt = iType == ITEMTYPE_DISGUISE and select(3, GetItemLinkEnchantInfo(link)) or nil
-			local questText = iType == ITMFLVR_ITYPE_QUEST_ITEM and GetQuestItemTooltipText(itemId) or nil
-			local flavTxt = GetItemLinkFlavorText(link) ~= "" and GetItemLinkFlavorText(link) or nil
-
-			local fTxt = flavTxt or questText or enchantTxt
-			local fTxtUpper = fTxt:upper()
+			local iTxtUpper = itemText:upper()
 
 			itemCollections[iType][index].name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper}
-			itemCollections[iType][index].fTxt = {fTxt, fTxtUpper}
+			itemCollections[iType][index].fTxt = {itemText, iTxtUpper}
 		end
 	end
 
