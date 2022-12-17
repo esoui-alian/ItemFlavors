@@ -51,15 +51,11 @@ local function OnItemChanged(comboBox, entryText, entry)
 	if ITMFLVR[ITMFLVR_ITYPE_FAVORITE] and ITMFLVR[ITMFLVR_ITYPE_FAVORITE].favorites and ITMFLVR[itemType] then
 		local favCtrl = ITMFLVR[itemType].favorites
 
-		--if itemType ~= ITMFLVR_ITYPE_FAVORITE then
-			local itemId = entryData.itemId
+		local itemId = entryData.itemId
 
-			if (not itemCollections[ITMFLVR_ITYPE_FAVORITE][itemId]) then
-				ZO_CheckButton_SetUnchecked(favCtrl)
-			else ZO_CheckButton_SetChecked(favCtrl) end
-		--[[else
-			ZO_CheckButton_Disable(favCtrl)
-		end]]
+		if (not itemCollections[ITMFLVR_ITYPE_FAVORITE][itemId]) then
+			ZO_CheckButton_SetUnchecked(favCtrl)
+		else ZO_CheckButton_SetChecked(favCtrl) end
 	end
 end
 
@@ -273,7 +269,7 @@ function ItemFlavors_AddFavorite(button)
 	local iconFile = infoCtrls.itemIcon:GetTextureFileName(iconFile)
 
 	local isQuest = GetQuestItemNameFromLink(link) ~= ""
-	local itemId = isQuest == true and select(3, link:find("|H1:quest_item:(%d+)|h|h")) or GetItemLinkItemId(link)
+	local itemId = isQuest == true and tonumber(select(3, link:find("|H1:quest_item:(%d+)|h|h"))) or GetItemLinkItemId(link)
 
 	local exists = EQUIP_FLAVOR_VARS.items[itemType][itemId] and EQUIP_FLAVOR_VARS.items[itemType][itemId].isQuest == isQuest
 
