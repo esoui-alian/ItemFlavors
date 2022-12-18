@@ -9,8 +9,8 @@
 ## Title: Item Flavors
 ## Author: Alianym
 ## Description: A list of equipment along with accompanying flavor text.
-## Version: 0.30
-## AddOnVersion: 000030
+## Version: 0.35
+## AddOnVersion: 000035
 ## APIVersion: 101036
 ## SavedVariables: ItemFlavors
 

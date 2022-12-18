@@ -35,6 +35,8 @@ local itemTypeData = {
 --OnSelectionChanged
 -----
 local function OnItemChanged(comboBox, entryText, entry)
+	if not (entry and entry.data) then return end
+
 	local entryData = entry.data
 	local descText = entryData.desc
 	local iconFile = entryData.icon
@@ -153,7 +155,7 @@ local function BuildItemList(itemType, searchText, comboBox, noRefresh)
 	maxCount[itemType] = maxCount[itemType] or {num = 0, ini = false}
 	local maxCountNotDone = (not searchText) and (not maxCount[itemType].ini)
 
-	for itemIndex, itemData in pairs(itemCollections[itemType]) do
+	for _, itemData in pairs(itemCollections[itemType]) do
 		local itemId = itemData.itemId
 		local itemLink = itemData.link
 		local iconFile = itemData.iconFile
@@ -303,9 +305,10 @@ local function OnLoad(e, addonName)
 	EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE] or {}
 	itemCollections[ITMFLVR_ITYPE_FAVORITE] = EQUIP_FLAVOR_VARS.items[ITMFLVR_ITYPE_FAVORITE]
 
+	-- NOTE: Create localized files, saves looping each load-in?
 	-- Get Localized Name / Flavor Text --
-	for iType, collection in pairs(itemCollections) do
-		for index, itemData in pairs(collection) do
+	--[[for iType, collection in pairs(itemCollections) do
+		for itemId, itemData in pairs(collection) do
 			local link = itemData.link
 			local itemId = itemData.itemId
 
@@ -323,10 +326,10 @@ local function OnLoad(e, addonName)
 			local itemNameUpper = itemName:upper()
 			local iTxtUpper = itemText:upper()
 
-			itemCollections[iType][index].name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper}
-			itemCollections[iType][index].fTxt = {itemText, iTxtUpper}
+			itemCollections[iType][itemId].name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper}
+			itemCollections[iType][itemId].fTxt = {itemText, iTxtUpper}
 		end
-	end
+	end]]
 
 	-- Populate Dropdowns --
 	-- Item Types
