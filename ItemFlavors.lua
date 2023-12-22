@@ -307,7 +307,7 @@ local function OnLoad(e, addonName)
 
 	-- NOTE: Create localized files, saves looping each load-in?
 	-- Get Localized Name / Flavor Text --
-	--[[for iType, collection in pairs(itemCollections) do
+	for iType, collection in pairs(itemCollections) do
 		for itemId, itemData in pairs(collection) do
 			local link = itemData.link
 			local itemId = itemData.itemId
@@ -329,7 +329,7 @@ local function OnLoad(e, addonName)
 			itemCollections[iType][itemId].name = {zo_strformat("[<<t:1>>]", itemName), itemNameUpper}
 			itemCollections[iType][itemId].fTxt = {itemText, iTxtUpper}
 		end
-	end]]
+	end
 
 	-- Populate Dropdowns --
 	-- Item Types
