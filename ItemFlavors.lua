@@ -313,14 +313,19 @@ local function OnLoad(e, addonName)
 			local itemId = itemData.itemId
 
 			local isQuest = iType == ITMFLVR_ITYPE_QUEST_ITEM or itemData.isQuest
-			local itemName, itemText
+			local itemName, itemText = "", ""
 			if isQuest then
 				itemName = GetQuestItemNameFromLink(link)
 				itemText = GetQuestItemTooltipText(itemId)
 			else
 				itemName = GetItemLinkName(link)
-				itemText = iType == ITEMTYPE_DISGUISE and select(3, GetItemLinkEnchantInfo(link))
-				itemText = GetItemLinkFlavorText(link) ~= "" and GetItemLinkFlavorText(link) or itemText
+				if iType == ITEMTYPE_DISGUISE then
+					itemText = select(3, GetItemLinkEnchantInfo(link))
+				end
+
+				if GetItemLinkFlavorText(link) ~= "" then
+					itemText =  GetItemLinkFlavorText(link)
+				end
 			end
 
 			local itemNameUpper = itemName:upper()
