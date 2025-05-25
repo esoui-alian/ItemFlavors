@@ -3,7 +3,7 @@
 ## Description: A list of equipment along with accompanying flavor text.
 ## Version: 0.44
 ## AddOnVersion: 000044
-## APIVersion: 101044
+## APIVersion: 101045 101046
 ## SavedVariables: ItemFlavors
 
 ;Keybinds
